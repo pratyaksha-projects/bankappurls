@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Home - BankApp{% endblock %}
+{% block content %}
+<div class="text-center">
+  <h1 class="h4 mb-3">Welcome to BankApp</h1>
+  <p class="mb-4">Always here to make your work easy!!</p>
+
+  {% if user.is_authenticated %}
+    <div class="row g-4">
+      <div class="col-12 col-lg-6">
+        <div class="card p-4">
+          <h2 class="h5">Current Balance</h2>
+          <p class="fs-4">₹{{ balance }}</p>
+
+          <hr>
+          <h3 class="h6 mb-3">Quick Wallet</h3>
+          <form method="post" class="text-start">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label class="form-label">Action</label>
+              {{ quick_form.action }}
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Amount (₹)</label>
+              {{ quick_form.amount }}
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <h3 class="h5 mb-3">Recent Transactions</h3>
+        <table class="table table-dark table-striped">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for t in transactions %}
+            <tr>
+              <td>{{ t.transaction_type }}</td>
+              <td>₹{{ t.amount }}</td>
+              <td>{{ t.timestamp }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3">No transactions yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <a class="btn btn-outline-light" href="{% url 'transactions' %}">View full history</a>
+      </div>
+    </div>
+  {% else %}
+    <a class="btn btn-primary" href="{% url 'login' %}">Login to Continue</a>
+  {% endif %}
+</div>
+{% endblock %}
